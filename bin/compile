@@ -1,0 +1,27 @@
+#!/bin/sh
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo "-----> Install fclone"
+BUILD_DIR=$1
+VENDOR_DIR="vendor"
+FILE="fclone-v0.3.1-linux-amd64"
+DOWNLOAD_URL="https://github.com/mawaya/rclone/releases/download/fclone-v0.3.1/$FILE.zip"
+
+echo "DOWNLOAD_URL = " $DOWNLOAD_URL | indent
+
+cd $BUILD_DIR
+mkdir -p $VENDOR_DIR
+cd $VENDOR_DIR
+mkdir -p fclone
+cd fclone
+wget -q $DOWNLOAD_URL
+unzip -qqj $FILE.zip
+rm -rf $FILE.zip
+
+echo "exporting PATH" | indent
+PROFILE_PATH="$BUILD_DIR/.profile.d/fclone.sh"
+mkdir -p $(dirname $PROFILE_PATH)
+echo 'export PATH="$PATH:${HOME}/vendor/fclone"' >> $PROFILE_PATH
